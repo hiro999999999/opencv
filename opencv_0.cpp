@@ -12,7 +12,7 @@ int main(){
 
     namedWindow( win_src, WINDOW_AUTOSIZE );
     namedWindow( win_dst, WINDOW_AUTOSIZE );
-
+ 
     flip( img_src, img_dst, 0 );
     imshow( win_src, img_src );
     imshow( win_dst, img_dst );
