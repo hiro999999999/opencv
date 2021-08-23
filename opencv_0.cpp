@@ -2,6 +2,7 @@
 #include <cmath>
 #include <opencv2/opencv.hpp>
 using namespace cv;
+
 int main(){
     std::string win_src = "src";
     std::string win_dst = "dst";
@@ -19,5 +20,6 @@ int main(){
     imwrite( file_dst, img_dst );
 
     waitKey(0);
+
     return 0;
-}
+}6
