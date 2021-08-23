@@ -1,3 +1,4 @@
+//ヒストグラム
 #include <iostream>
 #include <cmath>
 #include <opencv2/opencv.hpp>
