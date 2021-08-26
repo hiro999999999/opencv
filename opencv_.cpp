@@ -8,6 +8,7 @@ int main(){
     std::string win_gray = "gray";
     std::string win_dst = "dst";
     std::string file_src = "src.png";
+    std::string file_gray = "gray.png";
     std::string file_dst = "dst.png";
     Mat img_src =  imread( file_src, 1 );
     Mat img_gray;
@@ -25,6 +26,7 @@ int main(){
     imshow( win_src, img_src );
     imshow( win_gray, img_gray );
     imshow( win_dst, img_dst );
+    imwrite( file_gray, img_gray );
     imwrite( file_dst, img_dst );
 
     waitKey(0);
