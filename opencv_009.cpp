@@ -48,6 +48,7 @@ int main(){
                     values[k++] =  img_gray.data[ (y+i)*img_gray.step + (x+j)*img_gray.channels() ];
                 }
             }
+            for(int i = 0; i < 9; i++ ) std::cout << values[i] << " ";
             for( int i = 0; i < 9; i++ ){
                 for( int j = 8; j > i; j-- ){
                     if( values[j-1] > values[j] ){
@@ -58,6 +59,7 @@ int main(){
                 }
             }
             img_dst.data[ y*img_dst.step + x*img_dst.channels() ] = values[4];
+            std::cout << std::endl<<std::endl;
         }
     }
 
