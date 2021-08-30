@@ -12,8 +12,8 @@ int main(){
     std::string file_dst = "dst.png";
     Mat img_src =  imread( file_src, 1 );
     Mat img_gray;
-    cvtColor( img_src, img_src, COLOR_BGR2GRAY );
-    Mat img_dst;
+    cvtColor( img_src, img_gray, COLOR_BGR2GRAY );
+    Mat img_dst = img_gray.clone();
 
     namedWindow( win_src, WINDOW_AUTOSIZE );
     namedWindow( win_dst, WINDOW_AUTOSIZE );
@@ -24,6 +24,7 @@ int main(){
     
     imshow( win_src, img_src );
     imshow( win_dst, img_dst );
+    imshow( win_gray, img_gray );
     imwrite( file_dst, img_dst );
 
     waitKey(0);
