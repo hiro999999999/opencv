@@ -37,10 +37,11 @@ int main(){
         }
     }
     //クロージング処理
-    Mat img_gray_2 = img_gray.clone();
+    std::cout << "クロージング処理" << std::endl;
     Mat img_gray_2 = img_gray_1.clone();
     ////膨張処理
-    for( int y = 0; y < height; y++ ){
+    std::cout << "  膨張処理" << std::endl;
+    for( int y = 1; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
             if( img_gray_1.data[ y*img_gray.step + (x-1)*img_gray.channels() ]     == 255 ||
                 img_gray_1.data[ y*img_gray.step + (x+1)*img_gray.channels() ]     == 255 ||  
@@ -56,6 +57,7 @@ int main(){
         }
     }
     ////収縮処理
+    std::cout << "  収縮処理" << std::endl;
     Mat img_gray_3 = img_gray_2.clone();
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
@@ -73,8 +75,10 @@ int main(){
         }
     }
     Mat img_gray_4  = img_gray_3.clone();
+    std::cout << "オープニング処理" << std::endl;
     //オープニング処理
     ////収縮処理
+    std::cout << "  収縮処理" << std::endl;
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
             if( 
@@ -91,9 +95,12 @@ int main(){
             else img_gray_4.data[ y*img_gray.step + x*img_gray.channels() ] = img_gray_3.data[ (y+1)*img_gray.step + x*img_gray.channels() ]; 
         }
     }
+    img_gray = img_gray_4.clone();
     ////膨張処理
+    std::cout << "  膨張処理" << std::endl;
     for( int y = 1; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
+            std::cout << "y: " << y << " " << "x: " << x <<std::endl;
             if( img_gray_4.data[ y*img_gray.step + (x-1)*img_gray.channels() ]     == 255 ||
                 img_gray_4.data[ y*img_gray.step + (x+1)*img_gray.channels() ]     == 255 ||  
                 img_gray_4.data[ (y-1)*img_gray.step + x*img_gray.channels() ]     == 255 || 
@@ -107,6 +114,7 @@ int main(){
             else img_gray.data[ y*img_gray.step + x*img_gray.channels() ] = img_gray_4.data[ y*img_gray.step + x*img_gray.channels() ]; 
         }
     }
+    std::cout << "完了" << std::endl;
     Mat img_tmp;
     Mat elements = ( Mat_<uchar>(3,3) << 1,1,1,1,1,1,1,1,1 );
     morphologyEx( img_gray_1, img_tmp, MORPH_CLOSE, elements, Point( -1, -1 ), 1 );
