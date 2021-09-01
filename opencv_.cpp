@@ -16,15 +16,25 @@ int main(){
     Mat img_dst = img_gray.clone();
 
     namedWindow( win_src, WINDOW_AUTOSIZE );
+    namedWindow( win_gray, WINDOW_AUTOSIZE );
     namedWindow( win_dst, WINDOW_AUTOSIZE );
 
     //ここに書く
-
+    int height   = img_gray.rows,
+        width    = img_gray.cols,
+        step     = img_gray.step,
+        channels = img_gray.channels();
+    int operator_results[step*height];
+    for( int y = 0; y < height; y++ ){
+        for( int x = 0; x < width; x++ ){
+        }
+    }
     ////////////
     
     imshow( win_src, img_src );
-    imshow( win_dst, img_dst );
     imshow( win_gray, img_gray );
+    imshow( win_dst, img_dst );
+    imwrite( file_gray, img_gray );
     imwrite( file_dst, img_dst );
 
     waitKey(0);
