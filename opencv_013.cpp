@@ -24,7 +24,7 @@ int main(){
     //namedWindow( win_dst, WINDOW_AUTOSIZE );
 
     //ここに書く
-    int thresh = 90;
+    int thresh = 220;
     int height   = img_gray.rows,
         width    = img_gray.cols,
         step     = img_gray.step,
@@ -32,16 +32,17 @@ int main(){
     Mat img_gray_1 = img_gray.clone();
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
-            if( img_gray.data[ y*img_gray.step + x*img_gray.channels() ] > thresh  ) img_gray_1.data[ y*img_gray.step + x*img_gray.channels() ] = 255;
+            if( img_gray.data[ y*img_gray.step + x*img_gray.channels() ] < thresh  ) img_gray_1.data[ y*img_gray.step + x*img_gray.channels() ] = 255;
             else img_gray_1.data[ y*img_gray.step + x*img_gray.channels() ] = 0; 
         }
     }
     //クロージング処理
     Mat img_gray_2 = img_gray.clone();
+    Mat img_gray_2 = img_gray_1.clone();
     ////膨張処理
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
-            if(img_gray_1.data[ y*img_gray.step + (x-1)*img_gray.channels() ]     == 255 ||
+            if( img_gray_1.data[ y*img_gray.step + (x-1)*img_gray.channels() ]     == 255 ||
                 img_gray_1.data[ y*img_gray.step + (x+1)*img_gray.channels() ]     == 255 ||  
                 img_gray_1.data[ (y-1)*img_gray.step + x*img_gray.channels() ]     == 255 || 
                 img_gray_1.data[ (y-1)*img_gray.step + (x-1)*img_gray.channels() ] == 255 || 
@@ -55,10 +56,10 @@ int main(){
         }
     }
     ////収縮処理
-    Mat img_gray_3 = img_gray.clone();
+    Mat img_gray_3 = img_gray_2.clone();
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
-            if(img_gray_2.data[ y*img_gray.step + (x-1)*img_gray.channels() ]     == 0 ||
+            if(img_gray_2.data[ y*img_gray.step + (x-1)*img_gray.channels() ]      == 0 ||
                 img_gray_2.data[ y*img_gray.step + (x+1)*img_gray.channels() ]     == 0 ||  
                 img_gray_2.data[ (y-1)*img_gray.step + x*img_gray.channels() ]     == 0 || 
                 img_gray_2.data[ (y-1)*img_gray.step + (x-1)*img_gray.channels() ] == 0 || 
@@ -71,7 +72,7 @@ int main(){
             else img_gray_3.data[ y*img_gray.step + x*img_gray.channels() ] = img_gray_2.data[ (y+1)*img_gray.step + x*img_gray.channels() ] ; 
         }
     }
-    Mat img_gray_4  = img_gray.clone();
+    Mat img_gray_4  = img_gray_3.clone();
     //オープニング処理
     ////収縮処理
     for( int y = 0; y < height; y++ ){
@@ -91,7 +92,7 @@ int main(){
         }
     }
     ////膨張処理
-    for( int y = 0; y < height; y++ ){
+    for( int y = 1; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
             if( img_gray_4.data[ y*img_gray.step + (x-1)*img_gray.channels() ]     == 255 ||
                 img_gray_4.data[ y*img_gray.step + (x+1)*img_gray.channels() ]     == 255 ||  
