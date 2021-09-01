@@ -28,10 +28,19 @@ int main(){
     float d = sqrt(2);
     float a = (d*cos(M_PI/4));
     int a_int = (int)a;
-    std::cout << "d = " << a_int << std::endl;
+    
+    //ラスタスキャン
+    Point starting_point;
+    bool found_starting_point = false;
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
+            img_dst.data[ y*step + x*channels ] = img_gray.data[ y*step + x*channels ]*12/255; 
+            if( img_gray.data[ y*step + x*channels ] == 255 && !found_starting_point ){ 
+                starting_point = Point( x, y );
+                img_dst.data[ y*step + x*channels ] = img_gray.data[ y*step + x*channels ];
+                found_starting_point = true;
         }
+    }
     }
     ////////////
     
