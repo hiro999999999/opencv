@@ -11,7 +11,6 @@ int main(){
     std::string file_gray = "gray.png";
     std::string file_dst = "dst.png";
     Mat img_src =  imread( file_src, 1 );
-    Mat img_dst;
     Mat img_gray;
     cvtColor( img_src, img_gray, COLOR_BGR2GRAY );
 
@@ -23,14 +22,18 @@ int main(){
     int height   = img_gray.rows,
         width    = img_gray.cols,
         step     = img_gray.step,
-        channels = img_gray.channels();
+        channels = img_gray.channels(),
+        src_channels = img_src.channels();
     int left_right_extention = 70,
         top_bottom_extention = 70;
-    int value = 0;
-    img_dst = Mat::ones( Size( width+2*left_right_extention, height + 2*top_bottom_extention ), CV_8U )*value;
+    int value = 255;
+    Mat img_dst( height + 2*top_bottom_extention, width+2*left_right_extention, img_src.type(), Scalar( 255, 255, 255) );
+
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
-            img_dst.data[ ( y + top_bottom_extention )*img_dst.step + ( x + left_right_extention )*img_dst.channels() ] = img_gray.data[ y*step + x*channels ];
+            for(int i = 0; i < src_channels; i++ ){
+                img_dst.data[ ( y + top_bottom_extention )*img_dst.step + ( x + left_right_extention )*img_dst.channels() + i ] = img_src.data[ y*img_src.step + x*img_src.channels() + i ];
+            }
         }
     }
     ////////////
