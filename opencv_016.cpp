@@ -16,11 +16,6 @@ int main(){
     Mat img_gray;
     cvtColor( img_src, img_gray, COLOR_BGR2GRAY );
 
-
-    namedWindow( win_src, WINDOW_AUTOSIZE );
-    namedWindow( win_gray, WINDOW_AUTOSIZE );
-    namedWindow( win_dst, WINDOW_AUTOSIZE );
-
     //ここに書く
     const int height   = img_gray.rows,
               width    = img_gray.cols,
@@ -29,6 +24,7 @@ int main(){
     int operator_results[step*height];
     Mat img_dst = img_src.clone();
 
+    //2値化　→　クロージング処理　→　オープニング処理
     Mat img_bi = img_gray.clone(); 
     Mat img_tmp_0, img_tmp_1;
     Mat element8 = (Mat_<uchar>(3, 3) << 1, 1, 1, 1, 1, 1, 1, 1, 1 );
@@ -48,26 +44,24 @@ int main(){
         }
     }
 
+    //輪郭追従
+    const double angle_rate    = M_PI/4;
+    const int    circle_radius = 3;
     int x0 = starting_point.x,
         y0 = starting_point.y;
-    const int num_rows = height*step,
-              num_cols = width*channels;
     bool tracked[width][height];
     for( int i = 0; i < height; i++ ) for( int j = 0; j < width; j++ ) tracked[j][i] = false;
     tracked[starting_point.x][starting_point.y] = true;
-    std::cout << height << " rows  " << width << " cols " << std::endl;
-    int counter = 0;
     Mat img_brd( height, width, CV_8U, Scalar( 0, 0, 0 ) );
-    int circle_radius = 3;
     circle( img_brd, starting_point, circle_radius, 255, -1, 8 );
     int dir_id = -3;
     double d;
-    const double angle_rate = M_PI/4;
     bool contour_tracked = false;
     while( !contour_tracked ){
+        int counter = 0;
         bool found_next_pixel = false;
-        counter++;
         while( !found_next_pixel ){
+             counter++;
             dir_id++;
             if( dir_id > 7 ) dir_id -= 8;
             else if( dir_id < 0 ) dir_id += 8;
@@ -79,7 +73,6 @@ int main(){
                   dy = (int)dy_float;
             int x = x0 + dx,
                 y = y0 + dy;
-            std::cout << "id: " << dir_id << " dx = " << dx << " dy = " << dy << std::endl;
             if( img_bi.data[ y*step + x*channels ] == 255 ){
                 x0 = x;
                 y0 = y;
@@ -87,12 +80,14 @@ int main(){
                 current_point = Point( x,y );
                 tracked[x][y] = true;
                 circle( img_brd, current_point, circle_radius, 255, -1, 8 );
-                std::cout << "\n";
                 found_next_pixel = true;
             }
+            if( counter > 8 ) break;
         }
         if( current_point == starting_point && tracked[x0][y0] ) contour_tracked = true;
     }
+
+    //ソース画像加工
     for( int y = 0; y < height; y++ ){ 
         for( int x = 0; x < width; x++ ){
             if( img_brd.data[ y*step + x*channels ] > 0 )  {
