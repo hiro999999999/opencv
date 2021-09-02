@@ -45,16 +45,16 @@ int main(){
         for( int x = 0; x < width; x++ ){
             if( ( ( y == ymin || y == ymax ) && ( x >= xmin && x <= xmax ) ) || 
                 ( ( x == xmin || x == xmax ) && ( y >  ymin && y <  ymax ) )   ){
-                     img_gray.data[ y*step + x*channels ] = 128;
+                     img_gray.data[ y*step + x*channels ] = 255;
                     //std::cout << "( " << x << ", " << y << " )" << std::endl;
                 }
         }
     }
-    //std::cout << "( " << xmin << ", " << ymin << " )" << " -> " << "( " << xmax << ", " << ymax << " )" << std::endl;
+    std::cout << "( " << xmin << ", " << ymin << " )" << " -> " << "( " << xmax << ", " << ymax << " )" << std::endl;
     cvtColor( img_src, img_dst, COLOR_BGR2GRAY );
     Rect rect = boundingRect( img_dst );
     double ashi_cv = ( double )( rect.height )/rect.width;
-    rectangle( img_dst, rect, 128 );
+    rectangle( img_dst, rect, 255 );
     std::cout << "aspect ratio" << std::endl << "yours: " << ashi << std::endl << "correct: " << ashi_cv << std::endl;
     ////////////
     
