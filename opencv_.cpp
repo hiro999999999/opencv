@@ -3,6 +3,7 @@
 #include <cmath>
 #include <opencv2/opencv.hpp>
 using namespace cv;
+using namespace std;
 int main(){
     std::string win_src = "src";
     std::string win_gray = "gray";
