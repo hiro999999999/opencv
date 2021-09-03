@@ -76,14 +76,14 @@ int main(){
     for( int y = 0; y < height; y++ ){
             for( int x = 0; x < width; x++ ){
                 if(  img_bi.data[ y*step + x*channels ] == 255  ){
-                    x_d += ( x - x_g )*( x- x_g );
-                    y_d += ( y - y_g )*( y- y_g );
+                    x_d += pow(( x - x_g ),2);
+                    y_d += pow(( y - y_g ),2);//*( y- y_g );
                     xy_d += ( x - x_g )*( y- y_g );
                 }
             }
     }
     cout << "x_d: " << x_d/area << " y_d: " << y_d/area <<  " xy_d: " << xy_d/area << endl;
-    double theta = 0.5*atan( 2*xy_d/( x_d - y_d ) );
+    double theta = atan2( (2*xy_d),( x_d - y_d ) )/2;
 
     cout << "theta: " << theta*180/M_PI << endl;
     //輪郭追従
@@ -133,7 +133,6 @@ int main(){
             if( counter > 8 ) break;
         }
     }
-
     double perimeter = 0; 
     for( int i = 0; i < tracked_pixel_list.size() - 1; i++ ) {
         perimeter += sqrt( pow( tracked_pixel_list[i+1].x - tracked_pixel_list[i].x, 2 ) +  pow( tracked_pixel_list[i+1].y - tracked_pixel_list[i].y, 2 ) );
@@ -144,6 +143,9 @@ int main(){
     //ソース画像加工
     for( int y = 0; y < height; y++ ){ 
         for( int x = 0; x < width; x++ ){
+            if( img_bi.data[ y*step + x*channels ] == 255 )  {  
+                img_dst.data[ y*img_dst.step + x*img_dst.channels() ] = 0;
+            }
             if( img_brd.data[ y*step + x*channels ] == 255 )  {
                 for( int i = 0; i < img_dst.channels(); i++ ){
                     if( i == 0 )img_dst.data[ y*img_dst.step + x*img_dst.channels() + i ] = 255;
@@ -152,18 +154,29 @@ int main(){
             }else if( img_brd.data[ y*step + x*channels ] == 128 ){
                 for( int i = 0; i < img_dst.channels(); i++ ){
                     img_dst.data[ y*img_dst.step + x*img_dst.channels() + i ] = 255;
-                }                
+                }              
             }
         } 
     }
-    line( img_dst, Point( x_min, y_g - (x_g - x_min)*tan(theta) ), Point( x_max, y_g - (x_g - x_max)*tan(theta) ), Scalar( 0, 0, 255 ) );
+    rectangle( img_dst, Point(x_min, y_min), Point(x_max, y_max), Scalar( 0, 255, 0), 3 );
+    line( img_dst, Point( x_min, y_g + (x_min - x_g)*tan(theta) ), Point( x_max, y_g + ( x_max - x_g )*tan(theta) ), Scalar( 0, 0, 255 ) );
+    line( img_dst, Point( x_g + (y_min - y_g)*tan(-theta) , y_min ), Point( x_g + (y_max - y_g)*tan(-theta) , y_max ), Scalar( 0, 0, 255 ) );
+
+    Moments m = moments( img_bi, true );
+    double area_cv = m.m00;
+    cout << "area " << area_cv << endl;
+    double x_g_cv = m.m10/m.m00;
+    double y_g_cv =  m.m01/m.m00;
+    cout << "G: ( " << x_g_cv << ", " << y_g_cv << " )" << endl;
+    double ang = 0.5*atan2(2.0*m.mu11,m.mu20-m.mu02);
+    cout << "theta " << ang*180/M_PI << endl;
     ////////////
-    
-    imshow( win_dst, img_dst );
+
     imshow( win_brd, img_brd );
     imshow( win_bi, img_bi );
     imshow( win_gray, img_gray );
-    imshow( win_src, img_src );
+    imshow( win_src, img_src );    
+    imshow( win_dst, img_dst );
     imwrite( file_gray, img_gray );
     imwrite( file_bi, img_bi );
     imwrite( file_brd, img_brd );
