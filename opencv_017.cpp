@@ -52,12 +52,19 @@ int main(){
                     labels.push_back( newest_label );
                     label_grid[x][y] = newest_label;
                 }
-
-                
+                if( label_grid[x][y-1] > 0 && label_grid[x+1][y-1] > 0 && label_grid[x-1][y] > 0 ){
+                    if( label_grid[x][y-1] != label_grid[x][y] || label_grid[x+1][y-1] != label_grid[x][y] || label_grid[x-1][y] != label_grid[x][y] ){
+                        cout << label_grid[x][y-1] << " " << label_grid[x+1][y-1] << " " << label_grid[x-1][y] << " " << label_grid[x][y] << endl;
+                        int temp = min( {label_grid[x][y-1], label_grid[x+1][y-1], label_grid[x-1][y], label_grid[x][y] } );
+                        cout << temp << endl;
+                        label_grid[x][y-1]   = temp;
+                        label_grid[x+1][y-1] = temp;
+                        label_grid[x-1][y]   = temp;
+                        label_grid[x][y]     = temp;
             }
         }
     }
-    for( int i = 0; i < newest_label; i++ ) cout << labels[i] << "         " << i+1 <<endl;
+        }
     img_dst = Mat::zeros( height, width, CV_8U );
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
