@@ -40,7 +40,11 @@ int main(){
     vector<int> labels;
     uint newest_label;
     uint label_grid[width][height];
-    for(int i = 0; i < height; i++ ) for( int j = 0; j < width; j++ ) label_grid[j][i] = 0;
+    for(int i = 0; i < height; i++ ) { 
+        for( int j = 0; j < width; j++ ) {
+            label_grid[j][i] = 0;
+        }
+    }
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
             if( img_bi.data[ y*step + x*channels ] == 255 ){
@@ -54,17 +58,22 @@ int main(){
                 }
                 if( label_grid[x][y-1] > 0 && label_grid[x+1][y-1] > 0 && label_grid[x-1][y] > 0 ){
                     if( label_grid[x][y-1] != label_grid[x][y] || label_grid[x+1][y-1] != label_grid[x][y] || label_grid[x-1][y] != label_grid[x][y] ){
+                            int target_pixel_x[3], target_pixel_y[3];
+                            int temp = min( {label_grid[x][y-1], label_grid[x+1][y-1], label_grid[x-1][y], label_grid[x][y] } );                       
+                            cout << " x: " << x << " y: " << y << " width: " << width << " height: " << height << endl;
                         cout << label_grid[x][y-1] << " " << label_grid[x+1][y-1] << " " << label_grid[x-1][y] << " " << label_grid[x][y] << endl;
-                        int temp = min( {label_grid[x][y-1], label_grid[x+1][y-1], label_grid[x-1][y], label_grid[x][y] } );
                         cout << temp << endl;
+
                         label_grid[x][y-1]   = temp;
                         label_grid[x+1][y-1] = temp;
                         label_grid[x-1][y]   = temp;
                         label_grid[x][y]     = temp;
             }
         }
+                
     }
         }
+    }
     img_dst = Mat::zeros( height, width, CV_8U );
     for( int y = 0; y < height; y++ ){
         for( int x = 0; x < width; x++ ){
